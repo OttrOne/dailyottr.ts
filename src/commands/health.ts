@@ -4,7 +4,7 @@ import { VERSION } from '../version';
 import Parser from 'rss-parser';
 import { MessageEmbed } from 'discord.js';
 import { Command, CommandType } from '../interfaces/command';
-import { CallbackOptions } from '../interfaces/CallbackOptions';
+import { CallbackOptions } from '../interfaces/callbackoptions';
 const parser = new Parser();
 
 export = {

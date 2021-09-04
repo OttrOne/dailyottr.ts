@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionData } from 'discord.js';
-import { CallbackOptions } from './CallbackOptions';
+import { CallbackOptions } from './callbackoptions';
 
 // eslint-disable-next-line no-shadow
 export enum CommandType {

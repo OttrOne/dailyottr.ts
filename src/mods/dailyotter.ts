@@ -2,7 +2,7 @@ import { Client, Guild, MessageEmbed, User } from 'discord.js';
 import Parser from 'rss-parser';
 
 import dailyOtterModel from '../schemas/dailyotter-schema';
-import { Otter } from '../interfaces/Otter';
+import { Otter } from '../interfaces/otter';
 import configModel from '../schemas/doconf-schema';
 import { info, error as _error, debug } from '../core/logger';
 import { Task, addTask } from '../core/scheduler';

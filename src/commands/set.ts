@@ -1,5 +1,5 @@
 import { Command, CommandType } from '../interfaces/command';
-import { CallbackOptions } from '../interfaces/CallbackOptions';
+import { CallbackOptions } from '../interfaces/callbackoptions';
 import configModel from '../schemas/doconf-schema';
 
 export = {
