@@ -2,9 +2,9 @@ import configModel from '../schemas/doconf-schema';
 import logger from '../core/logger';
 import { VERSION } from '../version';
 import Parser from 'rss-parser';
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, CommandType } from '../interfaces/command';
-import { CallbackOptions } from '../interfaces/callbackoptions';
+import { CallbackOptions } from '../interfaces/CallbackOptions';
 const parser = new Parser();
 
 export = {
@@ -46,7 +46,7 @@ export = {
                 .setTitle('DailyOtterMod Test');
             if (ottChannel.isText()) {
                 await ottChannel.send({ embeds: [ottEmbed] })
-                    .then(msg => {
+                    .then((msg: Message) => {
                         msg.delete();
                     });
                 embed = true;

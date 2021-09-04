@@ -1,5 +1,5 @@
 import { Command, CommandType } from '../interfaces/command';
-import { CallbackOptions } from '../interfaces/callbackoptions';
+import { CallbackOptions } from '../interfaces/CallbackOptions';
 import { VERSION } from '../version';
 
 const generateReplyText = (numGuilds: number) => {
