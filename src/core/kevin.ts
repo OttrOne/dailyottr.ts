@@ -1,7 +1,7 @@
 import { readdirSync, lstatSync } from 'fs';
 import { join } from 'path';
 import { ApplicationCommandData, Client, GuildMember, MessageEmbed, Permissions, TextBasedChannels } from 'discord.js';
-import { Command, CommandType } from '../interfaces/Command';
+import { Command, CommandType } from '../interfaces/command';
 import { APIInteractionGuildMember } from 'discord-api-types';
 
 /**

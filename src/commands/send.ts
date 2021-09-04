@@ -1,4 +1,4 @@
-import { Command, CommandType } from '../interfaces/Command';
+import { Command, CommandType } from '../interfaces/command';
 import { CallbackOptions } from '../interfaces/CallbackOptions';
 import { sendLast } from '../mods/dailyotter';
 import { ApplicationCommandOptionData, Constants } from 'discord.js';

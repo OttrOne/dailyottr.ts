@@ -3,7 +3,7 @@ import logger from '../core/logger';
 import { VERSION } from '../version';
 import Parser from 'rss-parser';
 import { MessageEmbed } from 'discord.js';
-import { Command, CommandType } from '../interfaces/Command';
+import { Command, CommandType } from '../interfaces/command';
 import { CallbackOptions } from '../interfaces/CallbackOptions';
 const parser = new Parser();
 
