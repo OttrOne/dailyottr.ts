@@ -21,9 +21,10 @@ export class ModLoader {
 
         this.client = client;
         try {
-            console.log(`${this._load('../mods/')} mods loaded.`);
+            this._load('../mods/').then((count) => { console.log(`${count} mods loaded.`); });
         }
         catch (error) {
+            console.log(error);
             console.log('No mods loaded.');
         }
     }
@@ -33,16 +34,16 @@ export class ModLoader {
      * @param {string} dir
      * @returns {number} sum of loaded mods
      */
-    _load(dir: string) : number {
+    async _load(dir: string) : Promise<number> {
         let count = 0;
         const files = readdirSync(join(__dirname, dir));
         for (const file of files) {
             const stat = lstatSync(join(__dirname, dir, file));
             if (stat.isDirectory()) {
-                count += this._load(join(dir, file));
+                count += await this._load(join(dir, file));
             }
             else {
-                const mod = require(join(__dirname, dir, file));
+                const { default: mod } = await import(join(__dirname, dir, file));
                 mod(this.client);
                 ++count;
             }

@@ -1,4 +1,4 @@
-import { Command, CommandType } from '../interfaces/command';
+import { Command, CommandType } from '../interfaces/Command';
 import { CallbackOptions } from '../interfaces/CallbackOptions';
 import { VERSION } from '../version';
 

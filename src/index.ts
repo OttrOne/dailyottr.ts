@@ -2,6 +2,9 @@ import { Client, Intents } from 'discord.js';
 import { VERSION } from './version';
 import { Kevin } from './core/kevin';
 import { ModLoader } from './core/modloader';
+import scheduler from './core/scheduler';
+import logger from './core/logger';
+import mongo from './core/mongo';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -12,12 +15,19 @@ const client = new Client({
     ],
 });
 
-client.on('ready', () => {
+client.on('ready', async () => {
     if (!client.user) return;
 
     console.log(`LexBot v${VERSION} logged in as ${client.user.tag}!`);
     new Kevin(client, '?');
     new ModLoader(client);
+
+    scheduler();
+    await mongo().then(() => {
+        console.log('\x1b[32m%s\x1b[0m', 'Successfully connected to mongodb');
+    }).catch((e) => {
+        logger.error(e);
+    });
 });
 
 
