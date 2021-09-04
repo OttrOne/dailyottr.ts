@@ -19,7 +19,7 @@ client.on('ready', async () => {
     if (!client.user) return;
 
     console.log(`LexBot v${VERSION} logged in as ${client.user.tag}!`);
-    new Kevin(client, '?');
+    new Kevin(client, 'do!');
     new ModLoader(client);
 
     scheduler();
