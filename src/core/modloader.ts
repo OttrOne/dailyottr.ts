@@ -1,12 +1,13 @@
 import { readdirSync, lstatSync } from 'fs';
 import { Client } from 'discord.js';
 import { join } from 'path';
+import logger from '../core/logger';
 
 /**
  *  Mod loader to autoload mods (extensions that rely on client instance)
  *
  * @author AlexOttr <alex@ottr.one>
- * @version 1.1
+ * @version 1.2
  *
  * @exports ModLoader
  */
@@ -21,11 +22,11 @@ export class ModLoader {
 
         this.client = client;
         try {
-            this._load('../mods/').then((count) => { console.log(`${count} mods loaded.`); });
+            this._load('../mods/').then((count) => { logger.info(`[ModLoader] ${count} mods loaded.`); });
         }
         catch (error) {
-            console.log(error);
-            console.log('No mods loaded.');
+            logger.info('[ModLoader] No mods loaded.');
+            logger.error(error);
         }
     }
 
@@ -43,6 +44,7 @@ export class ModLoader {
                 count += await this._load(join(dir, file));
             }
             else {
+                if (file.startsWith('.')) continue;
                 const { default: mod } = await import(join(__dirname, dir, file));
                 mod(this.client);
                 ++count;

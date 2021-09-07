@@ -1,6 +1,6 @@
 {
   "name": "dailyottr",
-  "version": "1.0.3-beta",
+  "version": "1.0.4",
   "description": "DailyOttr bot based on LexBot TypeScript!",
   "scripts": {
     "prebuild": "node -p \"'export const VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts",
