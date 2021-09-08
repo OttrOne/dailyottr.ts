@@ -14,7 +14,7 @@ export = {
         {
             name: 'limit',
             description: 'Number of Otters to fetch',
-            required: true,
+            required: false,
             type: Constants.ApplicationCommandOptionTypes.NUMBER,
         } as ApplicationCommandOptionData,
     ],
@@ -40,7 +40,7 @@ export = {
                 ephemeral: true,
             });
 
-            const limit = interaction.options.getNumber('limit')!;
+            const limit = interaction.options.getNumber('limit') || 1;
             await sendLast(guild, limit);
             interaction.editReply({
                 content: 'Otters sent.',

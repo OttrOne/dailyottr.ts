@@ -4,14 +4,26 @@ import Parser from 'rss-parser';
 import dailyOtterModel from '../schemas/dailyotter-schema';
 import { Otter } from '../interfaces/Otter';
 import configModel from '../schemas/doconf-schema';
-import { info, error as _error, debug } from '../core/logger';
+import logger from '../core/logger';
 import { Task, addTask } from '../core/scheduler';
 
 const parser = new Parser();
 
-const fetchOtters = async (save = true, limit = -1, shuffle = false): Promise<Array<Otter>> => {
+/**
+ * DailyOtter
+ * @version 1.2
+ */
 
-    info(`[DailyOtterMod] Fetch otters, saving: ${save}`);
+/**
+ * Fetch Otters from the daily otter blog.
+ * @param {boolean} save the results to database
+ * @param {number} limit the results
+ * @param {boolean} shuffle the results
+ * @returns Promise with an Otter Array
+ */
+const fetchOtters = async (save: boolean = true, limit: number = -1, shuffle: boolean = false): Promise<Array<Otter>> => {
+
+    logger.info(`[DailyOtterMod] Fetch otters, saving: ${save}`);
 
     // parse dailyotter blog for pictures
     const feed = await parser.parseURL('https://dailyotter.org/?format=rss');
@@ -46,10 +58,15 @@ const fetchOtters = async (save = true, limit = -1, shuffle = false): Promise<Ar
             if (save) {
                 new dailyOtterModel({
                     guid: item.guid,
+                    title: item.title,
+                    date: item.isoDate,
+                    reference: item.contentSnippet,
+                    link: item.link,
+                    imageUrl: url[1],
                 }).save(function(err: any, doc: any) {
                     if (err) {
-                        _error(err);
-                        console.log(doc);
+                        logger.error(err);
+                        logger.debug(doc);
                     }
                 });
             }
@@ -59,6 +76,16 @@ const fetchOtters = async (save = true, limit = -1, shuffle = false): Promise<Ar
     }
     // pics from rss are ordered chronologically with newest, first.
     // we want to send it so that the newest one is the last message
+    return otters.reverse();
+};
+
+const fetchLocalOtters = async (limit: number = 0, shuffle: boolean = false): Promise<Array<Otter>> => {
+
+    const otters = (
+        await dailyOtterModel.find().limit(limit)
+    ) as Array<Otter>;
+    if (shuffle) otters.sort(() => Math.random() - 0.5);
+
     return otters.reverse();
 };
 
@@ -79,19 +106,18 @@ const sendOtter = async (guild: Guild, otters: Array<Otter>) => {
             try {
                 if (channel.isText()) {
                     await channel.send({ embeds: [otterEmbed] });
-                    debug(`[DailyOtterMod] Sent Ott to Server ${guild.name}`);
+                    logger.debug(`[DailyOtterMod] Sent Ott to Server ${guild.name}`);
                 }
             }
             catch (error) {
-                _error(`[DailyOtterMod] Unable to send Messages in the configured channel on Server ${guild.name}`);
-                console.log(error);
+                logger.error(`[DailyOtterMod] Unable to send Messages in the configured channel on Server ${guild.name}`);
+                logger.error(error);
             }
         }
 
     }
     catch (err) {
-        console.log(err);
-        // _error(err);
+        logger.error(err);
         return;
     }
 };
@@ -114,19 +140,25 @@ const generateEmbed = (me: User, otter: Otter) => {
         .setFooter(`Fetched from dailyotter.org - ${otter.reference}`);
 };
 
+/**
+ * Send a requested amount of otts to a server.
+ * @param {Guild} guild the current guild operating in
+ * @param {number} limit the amount of pictures sent
+ */
 const sendLast = async (guild: Guild, limit: number) => {
 
     // parse dailyotter blog for pictures
 
-    const otters = await fetchOtters(false, limit, true);
+    const otters = await fetchLocalOtters(limit, true);
     await sendOtter(guild, otters);
 };
 
 export default async (client: Client) => {
 
+    fetchLocalOtters();
     // first execution on startup
     const otters = await fetchOtters();
-    debug(`[DailyOtterMod] Found ${otters.length} new Otters !`);
+    logger.debug(`[DailyOtterMod] Found ${otters.length} new Otters !`);
     client.guilds.cache.forEach((guild) => {
         sendOtter(guild, otters);
     });
@@ -136,14 +168,13 @@ export default async (client: Client) => {
         const clnt = context[0];
 
         const otts = await fetchOtters();
-        debug(`[DailyOtterMod] Found ${otts.length} new Otters !`);
+        logger.debug(`[DailyOtterMod] Found ${otts.length} new Otters !`);
         clnt.guilds.cache.forEach((guild: Guild) => {
             sendOtter(guild, otts);
         });
-    }, 5 * 60 * 60 * 1000, undefined, client);
+    }, 3 * 60 * 60 * 1000, undefined, client);
     addTask(updateOtters);
-    info('[DailyOtterMod] Add Task to update otters');
+    logger.info('[DailyOtterMod] Add Task to update otters');
 };
 
-const _sendLast = sendLast;
-export { _sendLast as sendLast };
+export { sendLast };

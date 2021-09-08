@@ -7,3 +7,8 @@ export const reqBoolean = {
     type: Boolean,
     required: true,
 };
+
+export const reqDate = {
+    type: Date,
+    required: true,
+};

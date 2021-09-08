@@ -9,16 +9,21 @@ const parser = new Parser();
 
 export = {
     name: 'health',
-    type: CommandType.NORMAL,
+    type: CommandType.BOTH,
     category: 'DailyOttr',
     maxArgs: 0,
     permissions: ['ADMINISTRATOR'],
     description: 'Health report about the DailyOttr bot. This call is expensive..',
-    run: async ({ message, member }: CallbackOptions) => {
-
-        if (!message) return;
+    run: async ({ message, member, interaction }: CallbackOptions) => {
 
         const { guild } = member;
+
+        if (interaction) {
+            if (!interaction.channel) return;
+            interaction.deferReply({
+                ephemeral: true,
+            });
+        }
 
         let rss = false;
         let channel = false;
@@ -66,8 +71,16 @@ export = {
 
         checkmsg += embed ? '🟢' : '🔴';
         checkmsg += ' Permission to send Embeds in the configured channel';
-        message.channel.send(checkmsg);
 
-        message.channel.send(`Set ${message.channel} as Ott channel !`);
+        if (message) {
+            message.channel.send(checkmsg);
+        }
+        else if (interaction) {
+            interaction.channel?.send(checkmsg);
+            interaction.editReply({
+                content: 'Healthtest done.',
+            });
+        }
+
     },
 } as Command;
