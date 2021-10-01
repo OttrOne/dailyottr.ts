@@ -79,14 +79,12 @@ const fetchOtters = async (save: boolean = true, limit: number = -1, shuffle: bo
     return otters.reverse();
 };
 
-const fetchLocalOtters = async (limit: number = 0, shuffle: boolean = false): Promise<Array<Otter>> => {
+const fetchLocalOtters = async (limit: number = 1): Promise<Array<Otter>> => {
 
-    const otters = (
-        await dailyOtterModel.find().limit(limit)
+
+    return (
+        await dailyOtterModel.aggregate(undefined, undefined).sample(limit < 1 ? 1 : limit)
     ) as Array<Otter>;
-    if (shuffle) otters.sort(() => Math.random() - 0.5);
-
-    return otters.reverse();
 };
 
 const sendOtter = async (guild: Guild, otters: Array<Otter>) => {
@@ -149,13 +147,12 @@ const sendLast = async (guild: Guild, limit: number) => {
 
     // parse dailyotter blog for pictures
 
-    const otters = await fetchLocalOtters(limit, true);
+    const otters = await fetchLocalOtters(limit);
     await sendOtter(guild, otters);
 };
 
 export default async (client: Client) => {
 
-    fetchLocalOtters();
     // first execution on startup
     const otters = await fetchOtters();
     logger.debug(`[DailyOtterMod] Found ${otters.length} new Otters !`);

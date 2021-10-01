@@ -37,10 +37,9 @@ export = {
         catch (err) {
             logger.error(`[DailyOtterMod] ${err}`);
         }
-
         try {
             const confChannel = await configModel.findOne({ _id: guild.id });
-            if (!confChannel) return;
+            if (!confChannel) throw Error('Channel not configured.');
             const ottChannel = guild.channels.cache.get(confChannel.channelId);
             if (!ottChannel) throw Error('Channel not configured or not found on that server.');
 
@@ -61,6 +60,7 @@ export = {
         catch (err) {
             logger.error(`[DailyOtterMod] ${err}`);
         }
+
         let checkmsg = `Healthcheck for **DailyOttr Bot** Version \`${VERSION}\`\n\n`;
 
         checkmsg += rss ? '🟢' : '🔴';
