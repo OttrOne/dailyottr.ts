@@ -83,7 +83,7 @@ const fetchLocalOtters = async (limit: number = 1): Promise<Array<Otter>> => {
 
 
     return (
-        await dailyOtterModel.aggregate(undefined, undefined).sample(limit < 1 ? 1 : limit)
+        await dailyOtterModel.aggregate(undefined, undefined).sample(limit < 1 || limit > 10 ? 1 : limit)
     ) as Array<Otter>;
 };
 

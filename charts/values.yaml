@@ -1,0 +1,25 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/ottrone/dailyottr
+  pullPolicy: Always
+  tag: "latest"
+
+autoscaling:
+  enabled: false
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+resources: {}
+podSecurityContext: {}
+securityContext: {}
+tolerations: {}
+
+botToken:
+mongoHostname:
+mongoUsername: lexbot
+mongoPassword:
+mongoDatabase: dailyottr
